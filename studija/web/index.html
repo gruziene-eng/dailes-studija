@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dailės studija – nuo kelionių nuotraukų iki drobės</title>
+<style>
+:root{
+  --bg:#f6f1e9; --paper:#fffdf9; --ink:#2b2622; --muted:#7a6f66; --line:#e6ddd0;
+  --accent:#b5532f; --accent2:#2f6b6b; --gold:#c99a2e; --ok:#3d7a46;
+  --r:14px; --sh:0 1px 2px rgba(60,40,20,.06),0 6px 24px rgba(60,40,20,.07);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",sans-serif}
+h1,h2,h3{font-family:"New York","Iowan Old Style",Georgia,serif;font-weight:600;letter-spacing:-.01em;margin:0}
+button{font:inherit;cursor:pointer}
+header{position:sticky;top:0;z-index:10;background:rgba(246,241,233,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:24px;padding:14px 24px}
+.logo{display:flex;align-items:center;gap:10px;font-family:Georgia,serif;font-size:20px;font-weight:600}
+.logo span.dot{width:26px;height:26px;border-radius:50%;background:conic-gradient(#b5532f,#c99a2e,#2f6b6b,#3b4f8f,#b5532f)}
+nav{display:flex;gap:4px;margin-left:auto}
+nav button{border:0;background:none;padding:8px 14px;border-radius:999px;color:var(--muted)}
+nav button.on{background:var(--ink);color:#fff}
+nav .cnt{display:inline-block;min-width:20px;padding:0 6px;margin-left:6px;border-radius:99px;background:var(--accent);color:#fff;font-size:12px}
+main{max-width:1280px;margin:0 auto;padding:28px 24px 80px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh);padding:22px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.muted{color:var(--muted)}
+.btn{border:0;border-radius:10px;padding:10px 18px;background:var(--ink);color:#fff}
+.btn.acc{background:var(--accent)}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn:disabled{opacity:.5;cursor:default}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:99px;background:#efe7da;font-size:13px}
+label.f{display:block;margin:12px 0 4px;font-size:13px;color:var(--muted)}
+select,input[type=text],input[type=number]{font:inherit;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:#fff;width:100%}
+.hero{display:flex;gap:28px;align-items:center;margin-bottom:26px}
+.hero h1{font-size:34px}
+.steps3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:18px 0 26px}
+.steps3 div{padding:14px 16px;border-radius:12px;background:#fff;border:1px dashed var(--line)}
+.steps3 b{display:block;font-family:Georgia,serif;font-size:22px;color:var(--accent)}
+.src{cursor:pointer;transition:.15s;border:2px solid transparent}
+.src.on{border-color:var(--accent)}
+.warn{background:#fff4e5;border:1px solid #f0d3a8;border-radius:12px;padding:14px 16px;margin-top:12px;font-size:14px}
+.warn ol{margin:6px 0 0 18px;padding:0}
+.prog{height:10px;border-radius:99px;background:#eadfcf;overflow:hidden;margin:14px 0 6px}
+.prog i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--gold));width:0;transition:width .4s}
+/* kelionės */
+.trip{margin-bottom:34px}
+.trip-h{display:flex;align-items:baseline;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.trip-h h2{font-size:24px}
+.photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px}
+.ph{position:relative;border-radius:12px;overflow:hidden;background:#ddd;aspect-ratio:4/3;cursor:pointer;box-shadow:var(--sh)}
+.ph img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}
+.ph:hover img{transform:scale(1.04)}
+.ph .sc{position:absolute;left:8px;top:8px;background:rgba(0,0,0,.6);color:#fff;font-size:12px;padding:2px 8px;border-radius:99px}
+.ph .rank{position:absolute;left:8px;bottom:8px;background:var(--gold);color:#fff;font-size:12px;padding:2px 8px;border-radius:99px;font-weight:600}
+.ph .star{position:absolute;right:8px;top:8px;width:32px;height:32px;border-radius:50%;border:0;background:rgba(255,255,255,.85);font-size:17px;line-height:32px;padding:0}
+.ph .star.on{background:var(--accent);color:#fff}
+.ph .tags{position:absolute;right:8px;bottom:8px;display:flex;gap:4px}
+.ph .tags span{background:rgba(255,255,255,.85);font-size:11px;padding:1px 6px;border-radius:99px}
+.filters{display:flex;gap:10px;align-items:center;margin-bottom:22px;flex-wrap:wrap}
+.filters input{max-width:280px}
+/* planas */
+.plan{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:26px;align-items:start}
+.viewer{position:sticky;top:80px}
+.viewer .stage{background:#1d1a17;border-radius:var(--r);overflow:hidden;display:flex;justify-content:center;align-items:center;min-height:300px}
+.viewer .stage img{max-width:100%;max-height:68vh;display:block}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}
+.tabs button{border:1px solid var(--line);background:#fff;border-radius:99px;padding:6px 12px;font-size:13px}
+.tabs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.hint{font-size:13px;color:var(--muted);min-height:40px}
+.seg{display:inline-flex;background:#efe7da;border-radius:12px;padding:3px}
+.seg button{border:0;background:none;padding:7px 14px;border-radius:9px}
+.seg button.on{background:#fff;box-shadow:var(--sh)}
+.canv{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.canv button{border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px;text-align:left;font-size:13px}
+.canv button b{display:block;font-size:17px;font-family:Georgia,serif}
+.canv button.on{border-color:var(--accent);box-shadow:0 0 0 2px rgba(181,83,47,.2)}
+section.blk{margin-top:22px}
+section.blk>h3{font-size:20px;margin-bottom:10px;display:flex;gap:10px;align-items:center}
+.pal{display:flex;flex-direction:column;gap:8px}
+.col{display:grid;grid-template-columns:54px 1fr;gap:12px;align-items:center;padding:8px;border-radius:12px;background:#fff;border:1px solid var(--line)}
+.sw{width:54px;height:54px;border-radius:10px;position:relative;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+.sw b{position:absolute;left:4px;top:3px;font-size:11px;color:#fff;text-shadow:0 0 3px #000}
+.ing{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.ing span{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;background:#f5efe6;border-radius:99px;padding:2px 9px 2px 3px}
+.ing i{width:14px;height:14px;border-radius:50%;display:inline-block;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}
+.bar5{display:flex;height:16px;border-radius:8px;overflow:hidden;margin:8px 0 4px}
+.timeline{counter-reset:s;display:flex;flex-direction:column;gap:12px}
+.st{position:relative;padding:14px 16px 14px 56px;background:#fff;border:1px solid var(--line);border-radius:12px}
+.st:before{counter-increment:s;content:counter(s);position:absolute;left:14px;top:14px;width:30px;height:30px;border-radius:50%;background:var(--accent2);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600}
+.st h4{margin:0 0 2px;font-size:16px}
+.st ul{margin:6px 0 0;padding-left:18px}
+.st li{margin:3px 0}
+.st .meta{font-size:12px;color:var(--muted);display:flex;gap:10px;margin-top:6px}
+.st .meta a{color:var(--accent2);cursor:pointer;text-decoration:underline}
+.tech{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tc{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.tc h4{margin:0;font-size:15px}
+.tc .k{font-size:12.5px;color:var(--muted);margin:2px 0 6px}
+.tc ol{margin:0;padding-left:18px;font-size:13.5px}
+.tc .br{font-size:12px;margin-top:6px;color:var(--accent2)}
+.shop{display:flex;flex-direction:column;gap:6px}
+.shop label{display:grid;grid-template-columns:22px 1fr auto;gap:10px;align-items:start;padding:8px 10px;border-radius:10px;background:#fff;border:1px solid var(--line);cursor:pointer}
+.shop label.done{opacity:.5;text-decoration:line-through}
+.shop small{display:block;color:var(--muted)}
+.shop .pr{font-size:12.5px;color:var(--muted);white-space:nowrap}
+.tube{display:inline-block;width:12px;height:22px;border-radius:3px 3px 6px 6px;vertical-align:middle;margin-right:8px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}
+.diff{display:flex;gap:3px}
+.diff i{width:10px;height:10px;border-radius:2px;background:#e3d7c6}
+.diff i.on{background:var(--accent)}
+.empty{text-align:center;padding:60px 20px;color:var(--muted)}
+.mine{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-bottom:24px}
+.mine .ph{aspect-ratio:1}
+.mine .cap{font-size:13px;margin-top:6px}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:12px;opacity:0;transition:.3s;pointer-events:none}
+.toast.on{opacity:1}
+@media (max-width:900px){.plan,.grid2,.tech,.steps3{grid-template-columns:1fr}.viewer{position:static}}
+@media print{
+  header,.tabs,.no-print,nav,.star{display:none!important}
+  body{background:#fff}
+  .plan{grid-template-columns:1fr}
+  .viewer{position:static}
+  .card,.st,.tc,.col{box-shadow:none;break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<header><div class="bar">
+  <div class="logo"><span class="dot"></span>Dailės studija</div>
+  <nav>
+    <button data-v="saltinis">1. Nuotraukos</button>
+    <button data-v="keliones">2. Kelionės</button>
+    <button data-v="planas">3. Tapybos planas</button>
+    <button data-v="mano">4. Mano drobės <span class="cnt" id="cnt">0</span></button>
+  </nav>
+</div></header>
+<main id="app"></main>
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = (s, el = document) => el.querySelector(s);
+const app = $('#app');
+const S = { view: 'saltinis', status: null, trips: null, planId: null, medium: localStorage.medium || 'akrilas',
+            canvas: 1, study: 'originalas', src: 'photos', folder: localStorage.folder || '' };
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const api = async (u, body) => {
+  const r = await fetch(u, body ? {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body)} : {});
+  const j = await r.json(); if (!r.ok) throw new Error(j.klaida || r.statusText); return j;
+};
+const toast = t => { const e = $('#toast'); e.textContent = t; e.classList.add('on'); setTimeout(() => e.classList.remove('on'), 2200); };
+const fmtDate = d => d ? new Date(d).toLocaleDateString('lt-LT', {year: 'numeric', month: 'long', day: 'numeric'}) : '';
+
+function go(v) {
+  S.view = v;
+  document.querySelectorAll('nav button').forEach(b => b.classList.toggle('on', b.dataset.v === v));
+  ({saltinis: viewSource, keliones: viewTrips, planas: viewPlan, mano: viewMine})[v]();
+  window.scrollTo(0, 0);
+}
+document.querySelectorAll('nav button').forEach(b => b.onclick = () => go(b.dataset.v));
+
+async function refreshStatus() {
+  S.status = await api('/api/busena');
+  $('#cnt').textContent = S.status.pasirinkta;
+  return S.status;
+}
+
+/* ------------------------------------------------------------ 1. šaltinis */
+async function viewSource() {
+  const st = await refreshStatus();
+  const ph = st.photos;
+  let photosNote = '';
+  if (!ph.ok && ph.priezastis === 'leidimas') photosNote = `
+    <div class="warn"><b>macOS kol kas neleidžia skaityti Photos bibliotekos.</b>
+    <ol><li>Atidarykite  → <b>Sistemos nustatymai → Privatumas ir sauga → Visos disko prieigos teisė</b> (Full Disk Access).</li>
+    <li>Paspauskite <b>＋</b> ir pridėkite <b>Terminal</b> (Programos → Utilities), įjunkite jungiklį.</li>
+    <li>Uždarykite Terminal langą ir vėl paleiskite <b>Paleisti studiją.command</b>.</li></ol>
+    <div class="muted" style="margin-top:6px">Arba naudokite aplanką: Photos programoje pažymėkite kelionės nuotraukas → Failas → Eksportuoti.</div></div>`;
+  else if (!ph.ok && ph.priezastis === 'nerasta') photosNote = `<div class="warn">Photos biblioteka nerasta numatytoje vietoje. Naudokite aplanką.</div>`;
+  else if (!ph.ok) photosNote = `<div class="warn">Photos bibliotekos skaitymo klaida: ${esc(ph.klaida || ph.priezastis)}</div>`;
+  if (!ph.ok && S.src === 'photos') S.src = 'folder';
+
+  app.innerHTML = `
+  <div class="hero"><div>
+    <h1>Nuo kelionių nuotraukų iki drobės</h1>
+    <p class="muted" style="max-width:720px;margin:8px 0 0">Platforma peržiūri jūsų nuotraukas <b>tik šiame kompiuteryje</b>
+    (niekas nesiunčiama į internetą), suranda keliones, atrenka gražiausius ir tapybai tinkamiausius kadrus
+    ir kiekvienam sudaro tapybos planą: drobės dydį, dažų maišymo receptus, tonų studijas, technikas ir pirkinių sąrašą.</p>
+  </div></div>
+  <div class="steps3">
+    <div><b>1</b>Pasirinkite šaltinį ir paleiskite atranką</div>
+    <div><b>2</b>Peržiūrėkite geriausius kadrus iš kiekvienos kelionės, pažymėkite ★</div>
+    <div><b>3</b>Gaukite tapybos planą, pirkinių sąrašą ir tapykite</div>
+  </div>
+  <div class="grid2">
+    <div class="card src ${S.src === 'photos' ? 'on' : ''}" data-s="photos">
+      <h3>📷 iCloud / Photos biblioteka</h3>
+      <p class="muted">Skaito Photos biblioteką šiame „Mac“: datas, vietas, „Apple“ estetinius įvertinimus ir mėgstamas nuotraukas.
+      Jei įjungta „Optimizuoti saugyklą“, naudojamos lokalios peržiūros kopijos – to pakanka atrankai ir planui.</p>
+      ${ph.ok ? '<span class="pill" style="background:#e3f0e3">✓ Biblioteka pasiekiama</span>' : photosNote}
+    </div>
+    <div class="card src ${S.src === 'folder' ? 'on' : ''}" data-s="folder">
+      <h3>🗂 Aplankas su nuotraukomis</h3>
+      <p class="muted">Bet kuris aplankas (pvz., eksportuotos kelionių nuotraukos). Kelionės atpažįstamos pagal datas ir GPS,
+      arba kiekvienas poaplankis – atskira kelionė.</p>
+      <div style="display:flex;gap:8px"><input type="text" id="folder" placeholder="/Users/…/Kelionės" value="${esc(S.folder)}">
+      <button class="btn ghost" id="pick">Pasirinkti…</button></div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:20px">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+      <div><label class="f">Kaip atpažinti keliones</label>
+        <select id="mode">
+          <option value="auto">Automatiškai (pagal vietą ir datas)</option>
+          <option value="album">Pagal Photos albumus</option>
+          <option value="folder">Kiekvienas poaplankis – kelionė</option>
+        </select></div>
+      <div><label class="f">Tik nuo metų</label><input type="number" id="since" placeholder="pvz., 2019" min="1990" max="2100"></div>
+      <div><label class="f">Geriausių nuotraukų iš kelionės</label>
+        <select id="per"><option>6</option><option selected>12</option><option>20</option></select></div>
+    </div>
+    <div style="display:flex;gap:12px;align-items:center;margin-top:18px">
+      <button class="btn acc" id="go">Atrinkti geriausias nuotraukas</button>
+      ${st.turim ? '<button class="btn ghost" id="seeTrips">Žiūrėti ankstesnius rezultatus →</button>' : ''}
+    </div>
+    <div id="progBox" style="display:none"><div class="prog"><i id="progBar"></i></div><div class="muted" id="progTxt"></div></div>
+  </div>`;
+  app.querySelectorAll('.src').forEach(c => c.onclick = e => {
+    if (e.target.closest('input,button')) return;
+    S.src = c.dataset.s; app.querySelectorAll('.src').forEach(x => x.classList.toggle('on', x === c));
+  });
+  $('#pick').onclick = async () => {
+    const r = await api('/api/aplankas');
+    if (r.kelias) { $('#folder').value = r.kelias; S.src = 'folder'; viewSourceSel(); }
+  };
+  const viewSourceSel = () => app.querySelectorAll('.src').forEach(x => x.classList.toggle('on', x.dataset.s === S.src));
+  $('#folder').oninput = () => { S.src = 'folder'; viewSourceSel(); };
+  if ($('#seeTrips')) $('#seeTrips').onclick = () => go('keliones');
+  $('#go').onclick = async () => {
+    S.folder = $('#folder').value.trim(); localStorage.folder = S.folder;
+    if (S.src === 'photos' && !ph.ok) return toast('Photos biblioteka nepasiekiama – pasirinkite aplanką');
+    if (S.src === 'folder' && !S.folder) return toast('Nurodykite aplanką');
+    try {
+      await api('/api/skenuoti', {saltinis: S.src, aplankas: S.folder, grupavimas: $('#mode').value,
+                                   nuo_metu: $('#since').value, kiekis: $('#per').value});
+      $('#go').disabled = true; poll();
+    } catch (e) { toast(e.message); }
+  };
+  if (st.progress.running) { $('#go').disabled = true; poll(); }
+}
+
+async function poll() {
+  $('#progBox').style.display = 'block';
+  const p = await api('/api/progress');
+  $('#progBar').style.width = p.pct + '%';
+  $('#progTxt').textContent = p.error ? '⚠️ ' + p.error : p.text;
+  if (p.running) return setTimeout(poll, 700);
+  $('#go').disabled = false;
+  if (!p.error) { S.trips = null; toast(p.text); setTimeout(() => go('keliones'), 600); }
+}
+
+/* ------------------------------------------------------------ 2. kelionės */
+function sceneTags(sc) {
+  if (!sc) return '';
+  const t = [];
+  if (sc.saulelydis > .08) t.push('🌅'); else if (sc.dangus > .3) t.push('☁️');
+  if (sc.vanduo > .15) t.push('🌊');
+  if (sc.augmenija > .2) t.push('🌳');
+  if (sc.sniegas > .2) t.push('❄️');
+  if (sc.naktis) t.push('🌙');
+  return t.map(x => `<span>${x}</span>`).join('');
+}
+function photoCard(p, i) {
+  return `<div class="ph" data-id="${p.id}" title="${esc(p.failas)} · kokybė ${p.kokybe} · tapybiškumas ${p.tapybiskumas}">
+    <img loading="lazy" src="/thumb/${p.id}">
+    <span class="sc">${Math.round(p.balas)} / 100</span>
+    ${i === 0 ? '<span class="rank">★ Geriausia</span>' : ''}
+    <button class="star ${p.pasirinkta ? 'on' : ''}" title="Noriu nutapyti">★</button>
+    <div class="tags">${sceneTags(p.scena)}</div></div>`;
+}
+async function viewTrips() {
+  app.innerHTML = '<div class="empty">Kraunama…</div>';
+  if (!S.trips) S.trips = await api('/api/keliones');
+  await refreshStatus();
+  if (!S.trips.length) { app.innerHTML = `<div class="empty"><h2>Dar nėra rezultatų</h2><p>Pirmiausia paleiskite atranką.</p>
+     <button class="btn acc" onclick="go('saltinis')">Pasirinkti nuotraukas</button></div>`; return; }
+  const total = S.trips.reduce((a, t) => a + t.kiekis, 0);
+  app.innerHTML = `
+    <div class="filters">
+      <h1 style="font-size:28px;margin-right:auto">Jūsų kelionės</h1>
+      <span class="muted">${S.trips.length} kelionės · peržiūrėta ${total} nuotraukų</span>
+      <input type="text" id="q" placeholder="Ieškoti kelionės…">
+      <select id="sort" style="width:auto"><option value="d">Naujausios</option><option value="b">Geriausi kadrai</option></select>
+    </div>
+    <p class="muted" style="margin-top:-10px">Balas = tapybiškumas (spalvos, paprastumas, gamta) + techninė kokybė (aštrumas, ekspozicija)
+      + Apple estetinis įvertinimas. Panašūs kadrai atmetami. Spauskite nuotrauką, kad gautumėte tapybos planą, ★ – įtraukti į „Mano drobės“.</p>
+    <div id="tl"></div>`;
+  const render = () => {
+    const q = $('#q').value.toLowerCase();
+    let ts = S.trips.filter(t => !q || (t.pavadinimas + ' ' + t.datos + ' ' + (t.salis || '')).toLowerCase().includes(q));
+    if ($('#sort').value === 'b') ts = [...ts].sort((a, b) => b.geriausios[0].balas - a.geriausios[0].balas);
+    $('#tl').innerHTML = ts.map(t => `
+      <div class="trip"><div class="trip-h"><h2>${esc(t.pavadinimas)}</h2>
+        <span class="pill">${esc(t.datos)}</span>${t.salis ? `<span class="pill">${esc(t.salis)}</span>` : ''}
+        <span class="muted">${t.kiekis} nuotr. → atrinkta ${t.geriausios.length}</span></div>
+        <div class="photos">${t.geriausios.map(photoCard).join('')}</div></div>`).join('');
+    bindCards($('#tl'));
+  };
+  $('#q').oninput = render; $('#sort').onchange = render; render();
+}
+function bindCards(root) {
+  root.querySelectorAll('.ph').forEach(el => {
+    el.onclick = async e => {
+      const id = el.dataset.id;
+      if (e.target.classList.contains('star')) {
+        e.stopPropagation();
+        const on = !e.target.classList.contains('on');
+        const r = await api('/api/pasirinkti', {id, on, c: 1});
+        e.target.classList.toggle('on', on); $('#cnt').textContent = r.pasirinkta;
+        (S.trips || []).forEach(t => t.geriausios.forEach(p => { if (p.id === id) p.pasirinkta = on; }));
+        toast(on ? 'Įtraukta į „Mano drobės“' : 'Pašalinta'); return;
+      }
+      S.planId = id; S.canvas = 1; S.study = 'originalas'; go('planas');
+    };
+  });
+}
+
+/* ------------------------------------------------------------ 3. planas */
+const STUDIES = [
+  ['originalas', 'Originalas', 'Apkarpyta pagal pasirinktą drobės proporciją.'],
+  ['tinklelis', 'Tinklelis', 'Tą patį tinklelį nubrėžkite ant drobės ir perpieškite langelis po langelio.'],
+  ['konturai', 'Kontūrai', 'Supaprastintos formų ribos – būtent tiek reikia nupiešti prieš tapant.'],
+  ['tonai3', '3 tonai', 'Tamsūs / vidutiniai / šviesūs plotai. Pagal tai darykite pirmąjį sluoksnį.'],
+  ['tonai5', '5 tonai', 'Detalesnė šviesos ir šešėlių studija antram sluoksniui.'],
+  ['zonos', 'Spalvų zonos', 'Kiekviena zona – viena paletės spalva. Blokuokite jas plačiu teptuku.'],
+  ['kompozicija', 'Kompozicija', 'Trečdalių taisyklė: svarbiausi objektai ir horizontas – ties linijomis ar taškais.'],
+];
+async function viewPlan() {
+  if (!S.planId) { app.innerHTML = `<div class="empty"><h2>Pasirinkite nuotrauką</h2><p>Skiltyje „Kelionės“ spauskite ant bet kurios nuotraukos.</p>
+     <button class="btn acc" onclick="go('keliones')">Į keliones</button></div>`; return; }
+  app.innerHTML = '<div class="empty">Ruošiamas tapybos planas…</div>';
+  let g;
+  try { g = await api(`/api/planas/${S.planId}?m=${S.medium}&c=${S.canvas}`); }
+  catch (e) { app.innerHTML = `<div class="empty">⚠️ ${esc(e.message)}</div>`; return; }
+  S.canvas = g.drobes_idx;
+  const cv = g.drobe, p = g.nuotrauka;
+  const tones = [...g.paletė].sort((a, b) => a.tonas - b.tonas);
+  const checked = JSON.parse(localStorage['shop_' + S.planId + S.medium] || '{}');
+  app.innerHTML = `
+  <div class="plan">
+    <div class="viewer">
+      <div class="stage"><img id="studyImg" src="/render/${p.id}/${S.study}?c=${S.canvas}"></div>
+      <div class="tabs">${STUDIES.map(([k, n]) => `<button data-k="${k}" class="${k === S.study ? 'on' : ''}">${n}</button>`).join('')}</div>
+      <div class="hint" id="hint">${STUDIES.find(s => s[0] === S.study)[2]}</div>
+      <div class="no-print" style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn ghost" id="openImg">Atidaryti dideliame lange</button>
+        <button class="btn ghost" id="reveal">Rodyti Finder'yje</button>
+        <button class="btn ghost" onclick="print()">Spausdinti planą</button>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:start;gap:10px">
+          <div><h2 style="font-size:26px">${esc(p.vieta || p.failas || 'Nuotrauka')}</h2>
+            <div class="muted">${fmtDate(p.data)}</div></div>
+          <button class="btn ${p.pasirinkta ? 'acc' : 'ghost'} no-print" id="pick">${p.pasirinkta ? '★ Mano drobėse' : '☆ Noriu nutapyti'}</button>
+        </div>
+        <div style="display:flex;gap:18px;margin-top:14px;flex-wrap:wrap;align-items:center">
+          <div><div class="muted" style="font-size:12px">Sudėtingumas</div>
+            <div style="display:flex;gap:8px;align-items:center"><div class="diff">${[1,2,3].map(i => `<i class="${i <= g.sunkumas.lygis ? 'on' : ''}"></i>`).join('')}</div>
+            <b>${g.sunkumas.tekstas}</b></div></div>
+          <div><div class="muted" style="font-size:12px">Laikas</div><b>${g.sunkumas.valandos}</b></div>
+          <div><div class="muted" style="font-size:12px">Tapybiškumas / kokybė</div><b>${Math.round(p.tapybiskumas)} / ${Math.round(p.kokybe)}</b></div>
+        </div>
+        <label class="f">Dažai</label>
+        <div class="seg no-print" id="med">
+          <button data-m="akrilas" class="${S.medium === 'akrilas' ? 'on' : ''}">Akrilas (rekomenduojama pradedant)</button>
+          <button data-m="aliejus" class="${S.medium === 'aliejus' ? 'on' : ''}">Aliejiniai</button></div>
+        <label class="f">Drobės dydis</label>
+        <div class="canv">${g.drobes.map((c, i) => `<button data-c="${i}" class="${i === S.canvas ? 'on' : ''}">
+          <b>${c.plotis} × ${c.aukstis} cm</b>${esc(c.etiketė)}<div class="muted" style="margin-top:4px">${esc(c.apkarpymas)}</div></button>`).join('')}</div>
+      </div>
+
+      <section class="blk"><h3>🎨 Paletė ir dažų maišymas</h3>
+        <p class="muted" style="margin-top:-4px">Pagrindinės nuotraukos spalvos (nuo šviesiausios) ir kaip jas gauti iš tūbelių. „d.“ – dalys (pvz., mentelės galiukai).</p>
+        <div class="bar5">${g.paletė.map(c => `<div style="flex:${c.dalis};background:${c.hex}" title="${c.dalis}%"></div>`).join('')}</div>
+        <div class="pal">${g.paletė.map(c => `
+          <div class="col"><div class="sw" style="background:${c.hex}"><b>${c.nr}</b></div>
+            <div><b style="text-transform:capitalize">${esc(c.pavadinimas)}</b> <span class="muted" style="font-size:12px">· ${c.dalis}% paveikslo · ${c.tonas}/5 tonas</span>
+            <div class="ing">${c.receptas.ingredientai.map(i => `<span><i style="background:${i.hex}"></i>${esc(i.kiekis)} ${esc(i.dazai)}</span>`).join('<span style="background:none;padding:2px">+</span>')}</div>
+            ${c.receptas.tikslumas > 8 ? '<div class="muted" style="font-size:12px;margin-top:3px">Apytikslis mišinys – koreguokite pagal akį.</div>' : ''}</div></div>`).join('')}</div>
+        <p class="muted" style="font-size:13px">Patarimas: pirmiausia sumaišykite visas spalvas krūvelėmis ant paletės, nuo šviesiausios iki tamsiausios. Baltą dėkite pirmiausia, tamsius dažus – po truputį.</p>
+      </section>
+
+      <section class="blk"><h3>🖌 Žingsnis po žingsnio</h3>
+        <div class="timeline">${g.zingsniai.map(s => `<div class="st"><h4>${esc(s.pavadinimas)}</h4>
+          <div class="muted">${esc(s.aprasas)}</div><ul>${s.punktai.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
+          <div class="meta">${s.laikas ? `<span>⏱ ${esc(s.laikas)}</span>` : ''}${s.vaizdas ? `<a data-k="${s.vaizdas}">Rodyti: ${STUDIES.find(x => x[0] === s.vaizdas)[1]}</a>` : ''}</div></div>`).join('')}</div>
+      </section>
+
+      <section class="blk"><h3>✨ Technikos šiam paveikslui</h3>
+        <div class="tech">${g.technikos.map(t => `<div class="tc"><h4>${esc(t.pavadinimas)}</h4><div class="k">${esc(t.kada)}</div>
+          <ol>${t.kaip.map(x => `<li>${esc(x)}</li>`).join('')}</ol><div class="br">🖌 ${esc(t.teptukas)}</div></div>`).join('')}</div>
+      </section>
+
+      <section class="blk"><h3>🛒 Ką nusipirkti</h3>
+        <p class="muted" style="margin-top:-4px">Pažymėkite, ką jau turite. ${esc(g.pirkiniai.pastaba)}</p>
+        <div class="shop" id="shop">
+          ${g.pirkiniai.dazai.map((d, i) => shopRow('d' + i, `<span class="tube" style="background:${d.hex}"></span>${esc(d.dazai)}`, `${esc(d.en)} · naudojama ${d.kiek_spalvu} mišiniuose`, d.tuba, checked)).join('')}
+          ${g.pirkiniai.kita.map((d, i) => shopRow('k' + i, `${esc(d.daiktas)}`, `${esc(d.kategorija)} · ${esc(d.kam)}`, d.kaina, checked)).join('')}
+        </div>
+      </section>
+    </div>
+  </div>`;
+  const setStudy = k => {
+    S.study = k; $('#studyImg').src = `/render/${p.id}/${k}?c=${S.canvas}`;
+    app.querySelectorAll('.tabs button').forEach(b => b.classList.toggle('on', b.dataset.k === k));
+    $('#hint').textContent = STUDIES.find(s => s[0] === k)[2];
+  };
+  app.querySelectorAll('.tabs button').forEach(b => b.onclick = () => setStudy(b.dataset.k));
+  app.querySelectorAll('.st .meta a').forEach(a => a.onclick = () => { setStudy(a.dataset.k); window.scrollTo({top: 0, behavior: 'smooth'}); });
+  app.querySelectorAll('#med button').forEach(b => b.onclick = () => { S.medium = localStorage.medium = b.dataset.m; viewPlan(); });
+  app.querySelectorAll('.canv button').forEach(b => b.onclick = async () => {
+    S.canvas = +b.dataset.c;
+    if (p.pasirinkta) await api('/api/pasirinkti', {id: p.id, on: true, c: S.canvas});
+    viewPlan();
+  });
+  $('#openImg').onclick = () => window.open($('#studyImg').src, '_blank');
+  $('#reveal').onclick = () => api('/api/atidaryti', {id: p.id});
+  $('#pick').onclick = async () => {
+    const r = await api('/api/pasirinkti', {id: p.id, on: !p.pasirinkta, c: S.canvas});
+    $('#cnt').textContent = r.pasirinkta; S.trips = null; viewPlan();
+  };
+  $('#shop').onchange = e => {
+    const k = e.target.dataset.k; checked[k] = e.target.checked;
+    e.target.closest('label').classList.toggle('done', e.target.checked);
+    localStorage['shop_' + S.planId + S.medium] = JSON.stringify(checked);
+  };
+}
+function shopRow(k, title, sub, price, checked) {
+  return `<label class="${checked[k] ? 'done' : ''}"><input type="checkbox" data-k="${k}" ${checked[k] ? 'checked' : ''}>
+    <div><b>${title}</b><small>${sub}</small></div><span class="pr">${esc(price)}</span></label>`;
+}
+
+/* ------------------------------------------------------------ 4. mano drobės */
+async function viewMine() {
+  app.innerHTML = '<div class="empty">Ruošiamas bendras pirkinių sąrašas…</div>';
+  const r = await api(`/api/pirkiniai?m=${S.medium}`);
+  await refreshStatus();
+  if (!r.paveikslai.length) { app.innerHTML = `<div class="empty"><h2>Dar nepasirinkote paveikslų</h2>
+    <p>Kelionių skiltyje paspauskite ★ ant nuotraukų, kurias norite nutapyti – čia matysite jas visas ir bendrą pirkinių sąrašą.</p>
+    <button class="btn acc" onclick="go('keliones')">Į keliones</button></div>`; return; }
+  const L = r.sarasas, checked = JSON.parse(localStorage['shop_all' + S.medium] || '{}');
+  const area = r.paveikslai.reduce((a, p) => a + p.drobe.plotis * p.drobe.aukstis, 0) / 10000;
+  app.innerHTML = `
+    <div class="filters"><h1 style="font-size:28px;margin-right:auto">Mano drobės</h1>
+      <div class="seg no-print" id="med"><button data-m="akrilas" class="${S.medium === 'akrilas' ? 'on' : ''}">Akrilas</button>
+      <button data-m="aliejus" class="${S.medium === 'aliejus' ? 'on' : ''}">Aliejiniai</button></div>
+      <button class="btn ghost no-print" onclick="print()">Spausdinti sąrašą</button></div>
+    <div class="mine">${r.paveikslai.map(p => `<div><div class="ph" data-id="${p.id}"><img src="/thumb/${p.id}">
+      <button class="star on">★</button></div>
+      <div class="cap"><b>${esc(p.vieta || p.failas)}</b><br><span class="muted">${p.drobe.plotis}×${p.drobe.aukstis} cm · ${fmtDate(p.data)}</span></div></div>`).join('')}</div>
+    <div class="grid2">
+      <div class="card"><h3>🎨 Dažai visiems paveikslams</h3>
+        <p class="muted">${r.paveikslai.length} drobės, iš viso ~${area.toFixed(2)} m². Užtenka šių ${L.dazai.length} spalvų – visa kita sumaišoma.</p>
+        <div class="shop" id="shop">${L.dazai.map((d, i) => shopRow('d' + d.dazai, `<span class="tube" style="background:${d.hex}"></span>${esc(d.dazai)}`, esc(d.en), d.tuba, checked)).join('')}</div></div>
+      <div class="card"><h3>🧰 Priemonės</h3><p class="muted">${esc(L.pastaba)}</p>
+        <div class="shop" id="shop2">${L.kita.map((d, i) => shopRow('k' + i, esc(d.daiktas), `${esc(d.kategorija)} · ${esc(d.kam)}`, d.kaina, checked)).join('')}</div></div>
+    </div>`;
+  bindCards($('.mine'));
+  app.querySelectorAll('.mine .star').forEach(s => s.addEventListener('click', () => setTimeout(viewMine, 300)));
+  app.querySelectorAll('#med button').forEach(b => b.onclick = () => { S.medium = localStorage.medium = b.dataset.m; viewMine(); });
+  ['#shop', '#shop2'].forEach(id => $(id).onchange = e => {
+    checked[e.target.dataset.k] = e.target.checked; e.target.closest('label').classList.toggle('done', e.target.checked);
+    localStorage['shop_all' + S.medium] = JSON.stringify(checked);
+  });
+}
+
+refreshStatus().then(st => go(st.turim ? 'keliones' : 'saltinis'));
+</script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+Pillow
+numpy
+pillow-heif
+osxphotos==0.66.0; python_version < "3.10"
+osxphotos; python_version >= "3.10"

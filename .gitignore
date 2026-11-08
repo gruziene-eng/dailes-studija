@@ -1,0 +1,11 @@
+# Viešoje saugykloje – tik platformos failai
+*
+!.gitignore
+!INSTRUKCIJA.md
+!requirements.txt
+!Paleisti studiją.command
+!studija/
+!studija/**
+__pycache__/
+*.pyc
+.DS_Store
