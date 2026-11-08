@@ -86,6 +86,10 @@ def scan_photos(progress, since_year: int | None = None) -> list[dict]:
                         place = p.place.name.split(",")[0] if p.place.name else None
             except Exception:
                 pass
+            try:
+                fi = list(getattr(p, "face_info", []) or [])
+            except Exception:
+                fi = []
             score = None
             try:
                 sc = p.score
@@ -108,7 +112,8 @@ def scan_photos(progress, since_year: int | None = None) -> list[dict]:
                     "favorite": bool(getattr(p, "favorite", False)),
                     "apple_score": score,
                     "persons": len([x for x in (p.persons or []) if x and x != "_UNKNOWN_"]),
-                    "faces": len(getattr(p, "face_info", []) or []),
+                    "faces": len(fi),
+                    "face_size": round(max((getattr(f, "size", 0) or 0) for f in fi), 3) if fi else 0,
                     "selfie": bool(getattr(p, "selfie", False)),
                     "albums": albums,
                     "filename": p.original_filename,
@@ -228,7 +233,7 @@ def _range_label(d1: datetime, d2: datetime) -> str:
     return f"{d1:%Y-%m-%d} – {d2:%Y-%m-%d}"
 
 
-def group_trips(photos: list[dict], mode: str = "auto", min_photos: int = 6,
+def group_trips(photos: list[dict], mode: str = "auto", min_photos: int = 10,
                 home_radius_km: float = 60, gap_days: float = 2.5) -> list[dict]:
     """Grupuoja nuotraukas į keliones.
 
@@ -299,7 +304,9 @@ def group_trips(photos: list[dict], mode: str = "auto", min_photos: int = 6,
             folders = Counter(p["folder"] for p in t if p.get("folder"))
             d1, d2 = t[0]["_dt"], t[-1]["_dt"]
             if places:
-                top = [n for n, _ in places.most_common(3)]
+                # tik vietos, kuriose padaryta ≥12 % kadrų – taip atmetami oro uostai ir pakeliui aplankytos vietos
+                total = sum(places.values())
+                top = [n for n, c in places.most_common(3) if c >= 0.12 * total] or [places.most_common(1)[0][0]]
                 name = ", ".join(top)
             elif folders and home is None:
                 name = folders.most_common(1)[0][0]

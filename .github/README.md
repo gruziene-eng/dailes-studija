@@ -5,7 +5,7 @@ nuotraukas ir kiekvienai sudaro tapybos ant drobės planą. Niekas nesiunčiama 
 
 ## Paleidimas
 1. Dukart spustelėkite **`Paleisti studiją.command`** (pirmą kartą macOS gali paklausti – Dešinys pelės klavišas → Atidaryti).
-2. Pirmą kartą per 1–3 min. įsidiegs bibliotekos, tada naršyklėje atsidarys http://localhost:8765
+2. Pirmą kartą per 1–3 min. automatiškai įsidiegs [uv](https://docs.astral.sh/uv/), Python 3.12 ir bibliotekos (tik į jūsų vartotojo aplanką), tada naršyklėje atsidarys http://localhost:8765
 3. Norint skaityti Photos biblioteką: **Sistemos nustatymai → Privatumas ir sauga → Visos disko prieigos teisė → ＋ Terminal**.
 
 ## Kaip veikia
@@ -18,8 +18,10 @@ nuotraukas ir kiekvienai sudaro tapybos ant drobės planą. Niekas nesiunčiama 
 
 **Balas** = tapybiškumas (spalvingumas, paprastumas, gamta: dangus, vanduo, augmenija) + techninė kokybė
 (aštrumas, ekspozicija, kontrastas) + Apple estetinis įvertinimas ir „mėgstama“ žymė. Asmenukės, žmonių pilni
-kadrai, dokumentai ir ekrano nuotraukos nustumiami žemyn.
+kadrai (pagal veido dydį kadre), panašių kadrų serijos, dokumentai ir ekrano nuotraukos nustumiami žemyn.
 
 ## Duomenys
 Talpykla (miniatiūros, rezultatai): `~/Library/Application Support/DailesStudija` – galima saugiai ištrinti.
 Python aplinka: `~/.venvs/dailes-studija`.
+
+Reikalavimai: macOS, Photos bibliotekai skaityti naudojamas [osxphotos](https://github.com/RhetTbull/osxphotos).

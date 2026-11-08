@@ -10,6 +10,7 @@ import sys
 import threading
 import traceback
 import webbrowser
+from datetime import datetime
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
@@ -58,10 +59,14 @@ def total_score(photo: dict, m: dict) -> float:
         s += 8
     if photo.get("selfie"):
         s -= 25
-    elif photo.get("faces", 0) >= 3:
-        s -= 12
-    elif photo.get("faces", 0) >= 1:
-        s -= 5
+    else:
+        # kelionių peizažui žmonės kadre – minusas; kuo didesnis veidas, tuo didesnis
+        fs = photo.get("face_size") or 0
+        s -= min(28, fs * 220)
+        if photo.get("faces", 0) >= 3:
+            s -= 8
+        elif photo.get("faces", 0) >= 1 and not fs:
+            s -= 6
     if m["ekspozicija"] < 0.25:
         s -= 10
     return round(max(0, min(100, s)), 1)
@@ -123,12 +128,23 @@ def run_scan(source: str, folder: str | None, mode: str, since_year: int | None,
                     continue
                 scored.append((total_score(pmap[pid], m), pid))
             scored.sort(reverse=True)
-            best, hashes = [], []
+            best, kept = [], []
             for sc, pid in scored:
                 h = metrics[pid]["dhash"]
-                if any(imaging.hamming(h, x) <= 10 for x in hashes):
+                d = pmap[pid].get("date")
+                dt = datetime.fromisoformat(d) if d else None
+
+                def similar(o):
+                    oh, odt = o
+                    dist = imaging.hamming(h, oh)
+                    if dist <= 10:
+                        return True
+                    # serija: kadrai per 3 min. ir panaši kompozicija
+                    return bool(dt and odt and abs((dt - odt).total_seconds()) < 180 and dist <= 22)
+
+                if any(similar(o) for o in kept):
                     continue
-                hashes.append(h)
+                kept.append((h, dt))
                 best.append({"id": pid, "balas": sc})
                 if len(best) >= per_trip:
                     break
